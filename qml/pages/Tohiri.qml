@@ -136,7 +136,7 @@ Page
             {
                 var tmp = gradient.itemAt(i)
                 tmp.color = res[i];
-                console.log(res[i])
+//                console.log(res[i])
             }
 
 
