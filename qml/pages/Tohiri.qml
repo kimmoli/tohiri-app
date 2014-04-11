@@ -129,7 +129,7 @@ Page
             anchors.topMargin: 10
             anchors.horizontalCenter: parent.horizontalCenter
             color: Theme.primaryColor
-            text: "Max temp: 56 C"
+            text: "Max temp: " + tohir.maxTemp + " C"
         }
         Label
         {
@@ -138,7 +138,7 @@ Page
             anchors.topMargin: 10
             anchors.horizontalCenter: parent.horizontalCenter
             color: Theme.primaryColor
-            text: "Min temp: 18 C"
+            text: "Min temp: " + tohir.minTemp + " C"
         }
     }
 

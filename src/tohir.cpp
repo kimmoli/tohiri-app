@@ -48,6 +48,8 @@ void TohIR::startScan()
         m_temperatures.append(QString("#%1%2%3").arg(randInt(0, 255), 2, 16, QChar('0')).arg(randInt(0, 255), 2, 16, QChar('0')).arg(randInt(0, 255), 2, 16, QChar('0')).toUpper());
 
     emit temperaturesChanged();
+    emit minTempChanged();
+    emit maxTempChanged();
 }
 
 int TohIR::randInt(int low, int high)
@@ -59,6 +61,16 @@ int TohIR::randInt(int low, int high)
 QString TohIR::readVersion()
 {
     return GITHASH;
+}
+
+QString TohIR::readMinTemp()
+{
+    return QString("%1").arg(randInt(-10,50));
+}
+
+QString TohIR::readMaxTemp()
+{
+    return QString("%1").arg(randInt(50,100));
 }
 
 
