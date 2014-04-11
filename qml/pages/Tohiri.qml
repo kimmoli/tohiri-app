@@ -47,6 +47,12 @@ Page
         {
             MenuItem
             {
+                text: "About"
+                onClicked: pageStack.push(Qt.resolvedUrl("aboutPage.qml"))
+            }
+
+            MenuItem
+            {
                 text: "Save image"
                 onClicked: tohir.saveScreenCapture()
             }

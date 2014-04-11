@@ -56,6 +56,11 @@ int TohIR::randInt(int low, int high)
     return qrand() % ((high + 1) - low) + low;
 }
 
+QString TohIR::readVersion()
+{
+    return GITHASH;
+}
+
 
 void TohIR::saveScreenCapture()
 {
