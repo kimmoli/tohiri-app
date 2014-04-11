@@ -35,6 +35,7 @@ import QtMultimedia 5.0
 import Sailfish.Media 1.0
 
 
+
 Page
 {
     id: page
@@ -43,8 +44,11 @@ Page
     {
         anchors.fill: parent
 
+
+
         PullDownMenu
         {
+            id: pdm
             MenuItem
             {
                 text: "About"
@@ -54,7 +58,7 @@ Page
             MenuItem
             {
                 text: "Save image"
-                onClicked: tohir.saveScreenCapture()
+                onClicked: saveTimer.start()
             }
         }
 
@@ -159,12 +163,27 @@ Page
 
     Timer
     {
-
-        interval: 1000
+        interval: 250
         repeat: true
-        running: applicationActive && page.status === PageStatus.Active
-        onTriggered: tohir.startScan()
+        running: applicationActive && page.status === PageStatus.Active &&
+                 !pdm.active && !saveTimer.running
+        onTriggered:
+        {
+            tohir.startScan()
+        }
     }
+    Timer
+    {
+        id: saveTimer
+        interval: 500
+        repeat: false
+        running: false
+        onTriggered:
+        {
+            tohir.saveScreenCapture()
+        }
+    }
+
 }
 
 
