@@ -13,6 +13,7 @@ public:
 
     QList<QString> readTemperatures();
     Q_INVOKABLE void startScan();
+    Q_INVOKABLE void saveScreenCapture();
 
 //     Q_INVOKABLE void readInitParams();
 

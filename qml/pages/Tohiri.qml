@@ -43,6 +43,16 @@ Page
     {
         anchors.fill: parent
 
+        PullDownMenu
+        {
+            MenuItem
+            {
+                text: "Save image"
+                onClicked: tohir.saveScreenCapture()
+            }
+        }
+
+
         Camera
         {
             id: camera
@@ -120,8 +130,6 @@ Page
             color: Theme.primaryColor
             text: "Min temp: 18 C"
         }
-
-
     }
 
     TohIR

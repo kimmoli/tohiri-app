@@ -9,6 +9,7 @@
 TARGET = tohiri
 
 CONFIG += sailfishapp
+QT += dbus
 
 SOURCES += src/tohiri.cpp \
 	src/tohir.cpp
