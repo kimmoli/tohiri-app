@@ -19,6 +19,7 @@ TohIR::TohIR(QObject *parent) :
     m_min = 255;
     m_max = -255;
     m_avg = 0;
+    m_hotSpot = 31;
 
 }
 
@@ -60,6 +61,10 @@ void TohIR::startScan()
         m_temperatures.append(QString("#%1%2%3").arg(randInt(0, 255), 2, 16, QChar('0')).arg(randInt(0, 255), 2, 16, QChar('0')).arg(randInt(0, 255), 2, 16, QChar('0')).toUpper());
 
     emit temperaturesChanged();
+
+    m_hotSpot = (m_hotSpot + 1) & 0x3f;
+
+    emit hotSpotChanged();
 
     i = randInt(-10, 100);
     if (i < m_min)
@@ -103,6 +108,11 @@ QString TohIR::readAvgTemp()
 QString TohIR::readMaxTemp()
 {
     return QString("%1 °C").arg(m_max);
+}
+
+int TohIR::readHotSpot()
+{
+    return m_hotSpot;
 }
 
 /* Call dbus method to save screencapture */

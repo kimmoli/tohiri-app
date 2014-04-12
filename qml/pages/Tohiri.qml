@@ -55,7 +55,6 @@ Page
                 text: "About"
                 onClicked: pageStack.push(Qt.resolvedUrl("aboutPage.qml"))
             }
-
             MenuItem
             {
                 text: "Save image"
@@ -89,8 +88,9 @@ Page
             anchors.centerIn: parent
             source: camera
             width: 480
-            height: 480
+            //height: 480
         }
+
 
         /* the 8x8 grig for temperature gradient */
         Grid
@@ -110,6 +110,17 @@ Page
                     height: 60
                     opacity: gridOpacity
                     color: "#000000"
+                    property string lab: ""
+                    Label
+                    {
+                        anchors.centerIn: parent
+                        text: parent.lab
+                        color: Theme.primaryColor
+                        font.pixelSize: Theme.fontSizeLarge
+                        font.bold: true
+                        horizontalAlignment: Text.AlignHCenter
+                        opacity: 1.0
+                    }
                 }
             }
 
@@ -185,15 +196,17 @@ Page
         onTemperaturesChanged:
         {
             var res = tohir.temperatures
+            var hotspot = tohir.hotSpot
 
             for (var i=0; i<64 ; i++)
             {
                 var tmp = gradient.itemAt(i)
                 tmp.color = res[i];
-//                console.log(res[i])
+                if (i === hotspot)
+                    tmp.lab = "☼"
+                else
+                    tmp.lab = ""
             }
-
-
         }
     }
 
