@@ -6,6 +6,8 @@ import tohiri.TohIR 1.0
 
 Page
 {
+    property string version
+
     id: page
 
     SilicaFlickable
@@ -44,17 +46,12 @@ Page
             Label
             {
                 x: Theme.paddingLarge
-                text: "Version: " + tohir.version
+                text: "Version: " + version
                 color: Theme.primaryColor
                 font.pixelSize: Theme.fontSizeMedium
                 anchors.horizontalCenter: parent.horizontalCenter
             }
         }
-    }
-
-    TohIR
-    {
-        id: tohir
     }
 }
 

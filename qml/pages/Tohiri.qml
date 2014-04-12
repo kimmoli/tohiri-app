@@ -33,6 +33,7 @@ import Sailfish.Silica 1.0
 import tohiri.TohIR 1.0
 import QtMultimedia 5.0
 import Sailfish.Media 1.0
+import "."
 
 
 
@@ -41,7 +42,6 @@ Page
     id: page
 
     property bool pause: false
-    property real gridOpacity: 0.5
 
     SilicaFlickable
     {
@@ -53,7 +53,25 @@ Page
             MenuItem
             {
                 text: "About"
-                onClicked: pageStack.push(Qt.resolvedUrl("aboutPage.qml"))
+                onClicked: pageStack.push(Qt.resolvedUrl("aboutPage.qml"),
+                                          { "version": tohir.version } )
+            }
+            MenuItem
+            {
+                text: "Settings"
+                onClicked:
+                {
+                    var dialog = pageStack.push(Qt.resolvedUrl("SettingsDialog.qml"),
+                                          { "gradientOpacity": tohir.gradientOpacity,
+                                            "updateRate": tohir.updateRate } )
+                    dialog.accepted.connect( function()
+                    {
+                        tohir.gradientOpacity = dialog.gradientOpacity
+                        tohir.updateRate = dialog.updateRate
+                        tohir.saveSettings()
+                    } )
+                }
+
             }
             MenuItem
             {
@@ -95,6 +113,7 @@ Page
         /* the 8x8 grig for temperature gradient */
         Grid
         {
+            id: tempGrid
             z: 2
             columns: 8
             anchors.centerIn: parent
@@ -108,7 +127,7 @@ Page
                 {
                     width: 60
                     height: 60
-                    opacity: gridOpacity
+                    opacity: tohir.gradientOpacity
                     color: "#000000"
                     property string lab: ""
                     Label
@@ -125,6 +144,7 @@ Page
             }
 
         }
+
         Row
         {
             id: mamLabels
@@ -203,7 +223,7 @@ Page
                 var tmp = gradient.itemAt(i)
                 tmp.color = res[i];
                 if (i === hotspot)
-                    tmp.lab = "☼"
+                    tmp.lab = "+"
                 else
                     tmp.lab = ""
             }
@@ -212,10 +232,11 @@ Page
 
     Timer
     {
-        interval: 250
+        interval: tohir.updateRate
         repeat: true
         running: applicationActive && page.status === PageStatus.Active &&
                  !pdm.active && !saveTimer.running && !pause
+        triggeredOnStart: true
         onTriggered:
         {
             tohir.startScan()

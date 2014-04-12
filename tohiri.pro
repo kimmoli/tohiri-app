@@ -35,5 +35,6 @@ OTHER_FILES += qml/tohiri.qml \
     rpm/tohiri.yaml \
 	tohiri.png \
     tohiri.desktop \
-    qml/pages/aboutPage.qml
+    qml/pages/aboutPage.qml \
+    qml/pages/SettingsDialog.qml
 

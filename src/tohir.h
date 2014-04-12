@@ -12,6 +12,9 @@ class TohIR : public QObject
     Q_PROPERTY(QString maxTemp READ readMaxTemp NOTIFY maxTempChanged())
     Q_PROPERTY(int hotSpot READ readHotSpot NOTIFY hotSpotChanged())
 
+    Q_PROPERTY(qreal gradientOpacity READ readGradientOpacity WRITE writeGradientOpacity(qreal) NOTIFY gradientOpacityChanged())
+    Q_PROPERTY(int updateRate READ readUpdateRate WRITE writeUpdateRate() NOTIFY updateRateChanged())
+
 public:
     explicit TohIR(QObject *parent = 0);
     ~TohIR();
@@ -26,7 +29,14 @@ public:
     QString readMaxTemp();
     int readHotSpot();
 
-//     Q_INVOKABLE void readInitParams();
+    qreal readGradientOpacity();
+    void writeGradientOpacity(qreal val);
+
+    int readUpdateRate();
+    void writeUpdateRate(int val);
+
+    Q_INVOKABLE void readSettings();
+    Q_INVOKABLE void saveSettings();
 
 signals:
     void temperaturesChanged();
@@ -36,14 +46,20 @@ signals:
     void maxTempChanged();
     void hotSpotChanged();
 
+    void gradientOpacityChanged();
+    void updateRateChanged();
+
 private:
     int randInt(int low, int high);
 //    QString m_var;
     QList<QString> m_temperatures;
+
     int m_avg;
     int m_min;
     int m_max;
     int m_hotSpot;
+    qreal m_gradientOpacity;
+    int m_updateRate;
 };
 
 

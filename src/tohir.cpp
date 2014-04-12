@@ -9,7 +9,6 @@
 TohIR::TohIR(QObject *parent) :
     QObject(parent)
 {
-//    m_var = "";
 
     // Create seed for the random
     // That is needed only once on application startup
@@ -21,20 +20,36 @@ TohIR::TohIR(QObject *parent) :
     m_avg = 0;
     m_hotSpot = 31;
 
+    readSettings();
 }
 
-//void TohIR::readInitParams()
-//{
-//    QSettings settings;
-//    m_var = settings.value("var", "").toString();
+void TohIR::readSettings()
+{
+    QSettings s("kimmoli", "tohiri");
 
-//    emit varChanged();
-//}
+    s.beginGroup("View");
+    m_gradientOpacity = s.value("gradientOpacity", "0.5").toReal();
+    m_updateRate = s.value("updateRate", 500).toInt();
+    s.endGroup();
+
+    emit gradientOpacityChanged();
+    emit updateRateChanged();
+}
+
+void TohIR::saveSettings()
+{
+    QSettings s("kimmoli", "tohiri");
+
+    s.beginGroup("View");
+    s.setValue("gradientOpacity", QString::number(m_gradientOpacity,'f',2) );
+    s.setValue("updateRate", m_updateRate);
+    s.endGroup();
+}
+
 
 TohIR::~TohIR()
 {
 }
-
 
 int TohIR::randInt(int low, int high)
 {
@@ -46,6 +61,34 @@ int TohIR::randInt(int low, int high)
 QString TohIR::readVersion()
 {
     return GITHASH;
+}
+
+/**/
+qreal TohIR::readGradientOpacity()
+{
+    return m_gradientOpacity;
+}
+
+/**/
+void TohIR::writeGradientOpacity(qreal val)
+{
+    m_gradientOpacity = val;
+
+    emit gradientOpacityChanged();
+}
+
+int TohIR::readUpdateRate()
+{
+    qDebug() << "m_updateRate read "  << m_updateRate;
+    return m_updateRate;
+}
+
+void TohIR::writeUpdateRate(int val)
+{
+    m_updateRate = val;
+    qDebug() << "m_updateRate write "  << m_updateRate;
+
+    emit updateRateChanged();
 }
 
 /* Start IR Scan function, emit changed after completed */
@@ -66,7 +109,7 @@ void TohIR::startScan()
 
     emit hotSpotChanged();
 
-    i = randInt(-10, 100);
+    i = randInt(-20, 100);
     if (i < m_min)
     {
         m_min = i;
