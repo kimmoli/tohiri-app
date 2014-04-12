@@ -47,7 +47,7 @@ Dialog
         {
             id: rateSlider
             width: parent.width-10
-            label: "Gradient opacity"
+            label: "Update interval"
             anchors.horizontalCenter: parent.Center
             minimumValue: 100
             maximumValue: 2000
