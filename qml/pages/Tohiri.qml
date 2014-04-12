@@ -40,11 +40,12 @@ Page
 {
     id: page
 
+    property bool pause: false
+    property real gridOpacity: 0.5
+
     SilicaFlickable
     {
         anchors.fill: parent
-
-
 
         PullDownMenu
         {
@@ -61,7 +62,6 @@ Page
                 onClicked: saveTimer.start()
             }
         }
-
 
         Camera
         {
@@ -82,24 +82,17 @@ Page
             title: "TOH Infrared Imager"
         }
 
-
         GStreamerVideoOutput
         {
             id: videoPreview
             z: 1
             anchors.centerIn: parent
             source: camera
-//            MouseArea {
-//                anchors.fill: parent
-//                onClicked: {
-//                    console.log("capturing");
-//                    //camera.imageCapture.captureToLocation(imagePath);
-//                }
-//            }
+            width: 480
+            height: 480
         }
 
-        // Video size is 480x640
-
+        /* the 8x8 grig for temperature gradient */
         Grid
         {
             z: 2
@@ -115,31 +108,74 @@ Page
                 {
                     width: 60
                     height: 60
-                    opacity: 0.5
+                    opacity: gridOpacity
                     color: "#000000"
                 }
             }
 
         }
-
-        Label
+        Row
         {
-            id: maxTemp
+            id: mamLabels
+            x: Theme.paddingLarge
+            anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: videoPreview.bottom
-            anchors.topMargin: 10
-            anchors.horizontalCenter: parent.horizontalCenter
-            color: Theme.primaryColor
-            text: "Max temp: " + tohir.maxTemp + " C"
+            Label
+            {
+                width: page.width/3
+                text: "min"
+                color: Theme.secondaryColor
+                font.pixelSize: Theme.fontSizeSmall
+                horizontalAlignment: Text.AlignHCenter
+            }
+            Label
+            {
+                width: page.width/3
+                text: "avg"
+                color: Theme.secondaryColor
+                font.pixelSize: Theme.fontSizeSmall
+                horizontalAlignment: Text.AlignHCenter
+            }
+            Label
+            {
+                width: page.width/3
+                text: "max"
+                color: Theme.secondaryColor
+                font.pixelSize: Theme.fontSizeSmall
+                horizontalAlignment: Text.AlignHCenter
+            }
         }
-        Label
+        Row
         {
-            id: minTemp
-            anchors.top: maxTemp.bottom
-            anchors.topMargin: 10
+            id: mamValues
+            anchors.top: mamLabels.bottom
             anchors.horizontalCenter: parent.horizontalCenter
-            color: Theme.primaryColor
-            text: "Min temp: " + tohir.minTemp + " C"
+            Label
+            {
+                width: page.width/3
+                text: tohir.minTemp
+                color: Theme.primaryColor
+                font.pixelSize: Theme.fontSizeSmall
+                horizontalAlignment: Text.AlignHCenter
+            }
+            Label
+            {
+                width: page.width/3
+                text: tohir.avgTemp
+                color: Theme.primaryColor
+                font.pixelSize: Theme.fontSizeSmall
+                horizontalAlignment: Text.AlignHCenter
+            }
+            Label
+            {
+                width: page.width/3
+                text: tohir.maxTemp
+                color: Theme.primaryColor
+                font.pixelSize: Theme.fontSizeSmall
+                horizontalAlignment: Text.AlignHCenter
+            }
         }
+
     }
 
     TohIR
@@ -166,7 +202,7 @@ Page
         interval: 250
         repeat: true
         running: applicationActive && page.status === PageStatus.Active &&
-                 !pdm.active && !saveTimer.running
+                 !pdm.active && !saveTimer.running && !pause
         onTriggered:
         {
             tohir.startScan()

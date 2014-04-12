@@ -16,6 +16,10 @@ TohIR::TohIR(QObject *parent) :
     QTime time = QTime::currentTime();
     qsrand((uint)time.msec());
 
+    m_min = 255;
+    m_max = -255;
+    m_avg = 0;
+
 }
 
 //void TohIR::readInitParams()
@@ -31,49 +35,77 @@ TohIR::~TohIR()
 }
 
 
-
-QList<QString> TohIR::readTemperatures()
-{
-
-    return m_temperatures;
-}
-
-void TohIR::startScan()
-{
-    int i;
-
-    m_temperatures.clear();
-
-    for (i=0 ; i<64 ; i++)
-        m_temperatures.append(QString("#%1%2%3").arg(randInt(0, 255), 2, 16, QChar('0')).arg(randInt(0, 255), 2, 16, QChar('0')).arg(randInt(0, 255), 2, 16, QChar('0')).toUpper());
-
-    emit temperaturesChanged();
-    emit minTempChanged();
-    emit maxTempChanged();
-}
-
 int TohIR::randInt(int low, int high)
 {
     // Random number between low and high
     return qrand() % ((high + 1) - low) + low;
 }
 
+/* Return git describe as string (see .pro file) */
 QString TohIR::readVersion()
 {
     return GITHASH;
 }
 
+/* Start IR Scan function, emit changed after completed */
+void TohIR::startScan()
+{
+    int i;
+
+    m_temperatures.clear();
+
+    /* Return jibberish color gradient array */
+
+    for (i=0 ; i<64 ; i++)
+        m_temperatures.append(QString("#%1%2%3").arg(randInt(0, 255), 2, 16, QChar('0')).arg(randInt(0, 255), 2, 16, QChar('0')).arg(randInt(0, 255), 2, 16, QChar('0')).toUpper());
+
+    emit temperaturesChanged();
+
+    i = randInt(-10, 100);
+    if (i < m_min)
+    {
+        m_min = i;
+        emit minTempChanged();
+    }
+
+    if (i > m_max)
+    {
+        m_max = i;
+        emit maxTempChanged();
+    }
+
+    i = m_avg;
+    m_avg = (m_min + m_max) / 2;
+
+    if (m_avg != i)
+    {
+        emit avgTempChanged();
+    }
+}
+
+/* Return temperature color gradients as array */
+QList<QString> TohIR::readTemperatures()
+{
+    return m_temperatures;
+}
+
+/* Return minimum, average and maximum temperature of last scan */
 QString TohIR::readMinTemp()
 {
-    return QString("%1").arg(randInt(-10,50));
+    return QString("%1 °C").arg(m_min);
+}
+
+QString TohIR::readAvgTemp()
+{
+    return QString("%1 °C").arg(m_avg);
 }
 
 QString TohIR::readMaxTemp()
 {
-    return QString("%1").arg(randInt(50,100));
+    return QString("%1 °C").arg(m_max);
 }
 
-
+/* Call dbus method to save screencapture */
 void TohIR::saveScreenCapture()
 {
     QDate ssDate = QDate::currentDate();
@@ -102,7 +134,4 @@ void TohIR::saveScreenCapture()
         printf("Screenshot success to %s\n", qPrintable(ssFilename));
     else
         printf("Screenshot failed\n");
-
-//    notificationSend("Screenshot saved", ssFilename);
-
 }
