@@ -51,7 +51,8 @@ signals:
 
 private:
     int randInt(int low, int high);
-//    QString m_var;
+    QString temperatureColor(int temp);
+
     QList<QString> m_temperatures;
 
     int m_avg;

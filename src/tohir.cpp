@@ -15,8 +15,8 @@ TohIR::TohIR(QObject *parent) :
     QTime time = QTime::currentTime();
     qsrand((uint)time.msec());
 
-    m_min = 255;
-    m_max = -255;
+    m_min = 100;
+    m_max = -20;
     m_avg = 0;
     m_hotSpot = 31;
 
@@ -95,40 +95,53 @@ void TohIR::writeUpdateRate(int val)
 void TohIR::startScan()
 {
     int i;
+    int thisMax = -20;
+
+    bool newmax = false;
+    bool newmin = false;
+    bool newavg = false;
 
     m_temperatures.clear();
+    m_avg = 0;
 
     /* Return jibberish color gradient array */
 
     for (i=0 ; i<64 ; i++)
-        m_temperatures.append(QString("#%1%2%3").arg(randInt(0, 255), 2, 16, QChar('0')).arg(randInt(0, 255), 2, 16, QChar('0')).arg(randInt(0, 255), 2, 16, QChar('0')).toUpper());
+    {
+        int tmp = randInt(-20,100);
+
+        if (tmp > thisMax)
+        {
+            thisMax = tmp;
+            m_hotSpot = i;
+        }
+
+        if (tmp > m_max)
+        {
+            m_max = tmp;
+            newmax = true;
+        }
+
+        if (tmp < m_min)
+        {
+            m_min = tmp;
+            newmin = true;
+        }
+
+        m_avg = m_avg + tmp;
+
+        m_temperatures.append(temperatureColor(tmp));
+    }
+
+    if (newmax) emit maxTempChanged();
+    if (newmin) emit minTempChanged();
+
+    /* Average is average of last scan */
+    m_avg = m_avg/64;
+    emit avgTempChanged();
 
     emit temperaturesChanged();
-
-    m_hotSpot = (m_hotSpot + 1) & 0x3f;
-
     emit hotSpotChanged();
-
-    i = randInt(-20, 100);
-    if (i < m_min)
-    {
-        m_min = i;
-        emit minTempChanged();
-    }
-
-    if (i > m_max)
-    {
-        m_max = i;
-        emit maxTempChanged();
-    }
-
-    i = m_avg;
-    m_avg = (m_min + m_max) / 2;
-
-    if (m_avg != i)
-    {
-        emit avgTempChanged();
-    }
 }
 
 /* Return temperature color gradients as array */
@@ -187,4 +200,74 @@ void TohIR::saveScreenCapture()
         printf("Screenshot success to %s\n", qPrintable(ssFilename));
     else
         printf("Screenshot failed\n");
+}
+
+
+QString TohIR::temperatureColor(int temp)
+{
+    static const QString lookup[61] =
+    {
+        "#FF0000",
+        "#FF0a00",
+        "#FF1400",
+        "#FF1e00",
+        "#FF2800",
+        "#FF3200",
+        "#FF3c00",
+        "#FF4600",
+        "#FF5000",
+        "#FF5a00",
+        "#FF6400",
+        "#FF6e00",
+        "#FF7800",
+        "#FF8200",
+        "#FF8c00",
+        "#FF9600",
+        "#FFa000",
+        "#FFaa00",
+        "#FFb400",
+        "#FFbe00",
+        "#FFc800",
+        "#FFd200",
+        "#FFdc00",
+        "#FFe600",
+        "#FFf000",
+        "#FFfa00",
+        "#fdff00",
+        "#d7ff00",
+        "#b0ff00",
+        "#8aff00",
+        "#65ff00",
+        "#3eff00",
+        "#17ff00",
+        "#00ff10",
+        "#00ff36",
+        "#00ff5c",
+        "#00ff83",
+        "#00ffa8",
+        "#00ffd0",
+        "#00fff4",
+        "#00e4ff",
+        "#00d4ff",
+        "#00c4ff",
+        "#00b4ff",
+        "#00a4ff",
+        "#0094ff",
+        "#0084ff",
+        "#0074ff",
+        "#0064ff",
+        "#0054ff",
+        "#0044ff",
+        "#0032ff",
+        "#0022ff",
+        "#0012ff",
+        "#0002ff",
+        "#0000ff",
+        "#0100ff",
+        "#0200ff",
+        "#0300ff",
+        "#0400ff",
+        "#0500ff"
+    };
+    return lookup[60-((temp+20)/2)];
 }
