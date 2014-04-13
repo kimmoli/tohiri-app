@@ -10,6 +10,7 @@ TARGET = tohiri
 
 CONFIG += sailfishapp
 QT += dbus
+QT += multimedia
 
 #Force building to update version and build-date
 system(rm $$OUT_PWD/tohir.o)
@@ -21,7 +22,6 @@ REVISION = $$system(git --git-dir $$PWD/.git --work-tree $$PWD describe --dirty=
 DEFINES += "GITHASH=\\\"$${REVISION}\\\""
 
 message($${REVISION})
-
 
 SOURCES += src/tohiri.cpp \
 	src/tohir.cpp
@@ -36,5 +36,6 @@ OTHER_FILES += qml/tohiri.qml \
 	tohiri.png \
     tohiri.desktop \
     qml/pages/aboutPage.qml \
-    qml/pages/SettingsDialog.qml
+    qml/pages/SettingsDialog.qml \
+    qml/pages/fantsuCam.qml
 

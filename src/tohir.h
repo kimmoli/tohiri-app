@@ -15,6 +15,7 @@ class TohIR : public QObject
     Q_PROPERTY(qreal gradientOpacity READ readGradientOpacity WRITE writeGradientOpacity(qreal) NOTIFY gradientOpacityChanged())
     Q_PROPERTY(int updateRate READ readUpdateRate WRITE writeUpdateRate() NOTIFY updateRateChanged())
 
+
 public:
     explicit TohIR(QObject *parent = 0);
     ~TohIR();
@@ -62,6 +63,8 @@ private:
     qreal m_gradientOpacity;
     int m_updateRate;
 };
+
+
 
 
 #endif // TOHIR_H

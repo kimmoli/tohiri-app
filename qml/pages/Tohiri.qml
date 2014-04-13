@@ -22,6 +22,12 @@ Page
 
             MenuItem
             {
+                text: "FantsuCam"
+                onClicked: pageStack.push(Qt.resolvedUrl("fantsuCam.qml"))
+            }
+
+            MenuItem
+            {
                 text: "About"
                 onClicked: pageStack.push(Qt.resolvedUrl("aboutPage.qml"),
                                           { "version": tohir.version } )
