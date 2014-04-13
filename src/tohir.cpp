@@ -99,7 +99,6 @@ void TohIR::startScan()
 
     bool newmax = false;
     bool newmin = false;
-    bool newavg = false;
 
     m_temperatures.clear();
     m_avg = 0;
