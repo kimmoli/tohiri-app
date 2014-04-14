@@ -36,6 +36,5 @@ OTHER_FILES += qml/tohiri.qml \
 	tohiri.png \
     tohiri.desktop \
     qml/pages/aboutPage.qml \
-    qml/pages/SettingsDialog.qml \
-    qml/pages/fantsuCam.qml
+    qml/pages/SettingsDialog.qml
 
