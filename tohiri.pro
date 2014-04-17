@@ -24,9 +24,13 @@ DEFINES += "GITHASH=\\\"$${REVISION}\\\""
 message($${REVISION})
 
 SOURCES += src/tohiri.cpp \
-	src/tohir.cpp
+	src/tohir.cpp \
+    src/driverBase.cpp \
+    src/amg883x.cpp
 	
-HEADERS += src/tohir.h
+HEADERS += src/tohir.h \
+    src/driverBase.h \
+    src/amg883x.h
 
 OTHER_FILES += qml/tohiri.qml \
     qml/cover/CoverPage.qml \

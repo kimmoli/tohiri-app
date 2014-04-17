@@ -5,6 +5,8 @@
 #include <QtDBus/QtDBus>
 #include <QDBusArgument>
 
+#include "amg883x.h"
+
 
 TohIR::TohIR(QObject *parent) :
     QObject(parent)
@@ -21,6 +23,12 @@ TohIR::TohIR(QObject *parent) :
     m_hotSpot = 31;
 
     readSettings();
+
+    controlVdd(true);
+
+    QThread::msleep(100);
+
+    amg = new amg883x(0x68);
 }
 
 void TohIR::readSettings()
@@ -49,6 +57,7 @@ void TohIR::saveSettings()
 
 TohIR::~TohIR()
 {
+    controlVdd(false);
 }
 
 int TohIR::randInt(int low, int high)
@@ -94,20 +103,29 @@ void TohIR::writeUpdateRate(int val)
 /* Start IR Scan function, emit changed after completed */
 void TohIR::startScan()
 {
+
+    printf("Thermistor %0.5f\n", amg->getThermistor());
+
+    QList<qreal> res = amg->getTemperatureArray();
+
     int i;
     int thisMax = -20;
 
-    bool newmax = false;
-    bool newmin = false;
+    m_min = 100;
+    m_max = -20;
 
     m_temperatures.clear();
     m_avg = 0;
 
-    /* Return jibberish color gradient array */
+    for (i=0 ; i < 64 ; i++)
+        printf("%0.2f%s", res.at(i), (( i%8 == 0 ) ? "\n" : " ") );
+
+    /* Return color gradient array */
 
     for (i=0 ; i<64 ; i++)
     {
-        int tmp = randInt(-20,100);
+        /* Just use whole numbers */
+        int tmp = static_cast<int>(res.at(i));
 
         if (tmp > thisMax)
         {
@@ -116,24 +134,18 @@ void TohIR::startScan()
         }
 
         if (tmp > m_max)
-        {
             m_max = tmp;
-            newmax = true;
-        }
 
         if (tmp < m_min)
-        {
             m_min = tmp;
-            newmin = true;
-        }
 
         m_avg = m_avg + tmp;
 
         m_temperatures.append(temperatureColor(tmp));
     }
 
-    if (newmax) emit maxTempChanged();
-    if (newmin) emit minTempChanged();
+    emit maxTempChanged();
+    emit minTempChanged();
 
     /* Average is average of last scan */
     m_avg = m_avg/64;
@@ -204,6 +216,7 @@ void TohIR::saveScreenCapture()
 
 QString TohIR::temperatureColor(int temp)
 {
+    /* We have 61 different colors - for now */
     static const QString lookup[61] =
     {
         "#FF0000",
@@ -268,5 +281,28 @@ QString TohIR::temperatureColor(int temp)
         "#0400ff",
         "#0500ff"
     };
+
+    if (temp < -20)
+        temp = -20;
+
+    if (temp > 100)
+        temp = 100;
+
     return lookup[60-((temp+20)/2)];
+}
+
+
+void TohIR::controlVdd(bool state)
+{
+    int fd = open("/sys/devices/platform/reg-userspace-consumer.0/state", O_WRONLY);
+
+    if (!(fd < 0))
+    {
+        if (write (fd, state ? "1" : "0", 1) != 1)
+            qDebug() << "Failed to control VDD.";
+
+        close(fd);
+    }
+
+    return;
 }

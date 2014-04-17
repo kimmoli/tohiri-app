@@ -1,6 +1,7 @@
 #ifndef TOHIR_H
 #define TOHIR_H
 #include <QObject>
+#include "amg883x.h"
 
 class TohIR : public QObject
 {
@@ -51,6 +52,9 @@ signals:
     void updateRateChanged();
 
 private:
+
+    void controlVdd(bool state);
+
     int randInt(int low, int high);
     QString temperatureColor(int temp);
 
@@ -62,6 +66,8 @@ private:
     int m_hotSpot;
     qreal m_gradientOpacity;
     int m_updateRate;
+
+    amg883x* amg;
 };
 
 
