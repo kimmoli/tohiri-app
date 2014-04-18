@@ -142,20 +142,20 @@ void TohIR::startScan()
 
     }
 
-    m_temperatures.clear();
-
-    for (i=0 ; i<64 ; i++)
-        m_temperatures.append(temperatureColor(static_cast<int>(res.at(i)), m_min, m_max));
-
     emit maxTempChanged();
     emit minTempChanged();
+    emit hotSpotChanged();
 
-    /* Average is average of last scan */
     m_avg = m_avg/64;
     emit avgTempChanged();
 
+    /* Get RGB values for each pixel */
+    m_temperatures.clear();
+
+    for (i=0 ; i<64 ; i++)
+        m_temperatures.append(temperatureColor(static_cast<int>(res.at(i)), m_min, m_max, m_avg));
+
     emit temperaturesChanged();
-    emit hotSpotChanged();
 }
 
 /* Return temperature color gradients as array */
@@ -217,7 +217,7 @@ void TohIR::saveScreenCapture()
 }
 
 
-QString TohIR::temperatureColor(int temp, int min, int max)
+QString TohIR::temperatureColor(int temp, int min, int max, int avg)
 {
     /* We have 61 different colors - for now */
     static const QString lookup[61] =
@@ -235,21 +235,27 @@ QString TohIR::temperatureColor(int temp, int min, int max)
         "#FF0000"
     };
 
-    int span = max - min; /* Span of temperature range */
-    int t = temp - min; /* Adjust low end to 0 */
-
-    if (span < 30) /* low span - This needs still some work... */
+    /* If true span is low, tweak it to around avg */
+    if ((max - min) < 20)
     {
-        t = t + (span/2);
-        span = 30;
+        max = ( ((avg + 10) > max) ? (avg + 10) : max );
+        min = ( ((avg - 10) < min) ? (avg - 10) : min );
     }
 
-    int x = (t * (60000/span))/1000; /* Scale to 60 points */
+    /* Adjust low end to 0, to get only positive numbers */
+    int t = temp - min;
 
-    if (x > 60) /* just to prevent segfaults */
-        x = 60;
+    /* span is 2x max or min difference to average, which is larger */
+    int span = 2 * ((max - avg) > (avg - min) ? (max - avg) : (avg - min));
 
-    return lookup[x];
+    /* Scale to 60 points */
+    int x = (t * (60000/span))/1000;
+
+    /* just to prevent segfaults, return error color (white) */
+    if ( (x < 0) || (x > 60) )
+        return "#FFFFFF";
+
+    return lookup[x]; /* Return corresponding RGB color */
 }
 
 
