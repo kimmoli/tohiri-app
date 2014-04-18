@@ -3,7 +3,4 @@ TOHIRI
 
 Jolla TOH Infrared Thermal Imager
 
-- Will be here soon(tm)
-- Simple Demonstration of the UI
-
-or should i call in TOH IrTI  (https://www.youtube.com/watch?v=tG8XpMDbHGM)
+Uses Panasonics AMG8832 sensor over I2C and creates temperature gradient color overlay on top of camera viewfinder
