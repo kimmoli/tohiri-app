@@ -56,7 +56,7 @@ private:
     void controlVdd(bool state);
 
     int randInt(int low, int high);
-    QString temperatureColor(int temp);
+    QString temperatureColor(int temp, int min, int max);
 
     QList<QString> m_temperatures;
 

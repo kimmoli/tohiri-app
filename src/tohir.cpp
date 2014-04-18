@@ -109,12 +109,11 @@ void TohIR::startScan()
     QList<qreal> res = amg->getTemperatureArray();
 
     int i;
-    int thisMax = -20;
+    int thisMax = -40;
 
-    m_min = 100;
-    m_max = -20;
+    m_min = 200;
+    m_max = -40;
 
-    m_temperatures.clear();
     m_avg = 0;
 
     for (i=0 ; i < 64 ; i++)
@@ -141,8 +140,12 @@ void TohIR::startScan()
 
         m_avg = m_avg + tmp;
 
-        m_temperatures.append(temperatureColor(tmp));
     }
+
+    m_temperatures.clear();
+
+    for (i=0 ; i<64 ; i++)
+        m_temperatures.append(temperatureColor(static_cast<int>(res.at(i)), m_min, m_max));
 
     emit maxTempChanged();
     emit minTempChanged();
@@ -214,81 +217,39 @@ void TohIR::saveScreenCapture()
 }
 
 
-QString TohIR::temperatureColor(int temp)
+QString TohIR::temperatureColor(int temp, int min, int max)
 {
     /* We have 61 different colors - for now */
     static const QString lookup[61] =
     {
-        "#FF0000",
-        "#FF0a00",
-        "#FF1400",
-        "#FF1e00",
-        "#FF2800",
-        "#FF3200",
-        "#FF3c00",
-        "#FF4600",
-        "#FF5000",
-        "#FF5a00",
-        "#FF6400",
-        "#FF6e00",
-        "#FF7800",
-        "#FF8200",
-        "#FF8c00",
-        "#FF9600",
-        "#FFa000",
-        "#FFaa00",
-        "#FFb400",
-        "#FFbe00",
-        "#FFc800",
-        "#FFd200",
-        "#FFdc00",
-        "#FFe600",
-        "#FFf000",
-        "#FFfa00",
-        "#fdff00",
-        "#d7ff00",
-        "#b0ff00",
-        "#8aff00",
-        "#65ff00",
-        "#3eff00",
-        "#17ff00",
-        "#00ff10",
-        "#00ff36",
-        "#00ff5c",
-        "#00ff83",
-        "#00ffa8",
-        "#00ffd0",
-        "#00fff4",
-        "#00e4ff",
-        "#00d4ff",
-        "#00c4ff",
-        "#00b4ff",
-        "#00a4ff",
-        "#0094ff",
-        "#0084ff",
-        "#0074ff",
-        "#0064ff",
-        "#0054ff",
-        "#0044ff",
-        "#0032ff",
-        "#0022ff",
-        "#0012ff",
-        "#0002ff",
-        "#0000ff",
-        "#0100ff",
-        "#0200ff",
-        "#0300ff",
-        "#0400ff",
-        "#0500ff"
+        "#0500ff", "#0400ff", "#0300ff", "#0200ff", "#0100ff", "#0000ff",
+        "#0002ff", "#0012ff", "#0022ff", "#0032ff", "#0044ff", "#0054ff",
+        "#0064ff", "#0074ff", "#0084ff", "#0094ff", "#00a4ff", "#00b4ff",
+        "#00c4ff", "#00d4ff", "#00e4ff", "#00fff4", "#00ffd0", "#00ffa8",
+        "#00ff83", "#00ff5c", "#00ff36", "#00ff10", "#17ff00", "#3eff00",
+        "#65ff00", "#8aff00", "#b0ff00", "#d7ff00", "#fdff00", "#FFfa00",
+        "#FFf000", "#FFe600", "#FFdc00", "#FFd200", "#FFc800", "#FFbe00",
+        "#FFb400", "#FFaa00", "#FFa000", "#FF9600", "#FF8c00", "#FF8200",
+        "#FF7800", "#FF6e00", "#FF6400", "#FF5a00", "#FF5000", "#FF4600",
+        "#FF3c00", "#FF3200", "#FF2800", "#FF1e00", "#FF1400", "#FF0a00",
+        "#FF0000"
     };
 
-    if (temp < -20)
-        temp = -20;
+    int span = max - min; /* Span of temperature range */
+    int t = temp - min; /* Adjust low end to 0 */
 
-    if (temp > 100)
-        temp = 100;
+    if (span < 30) /* low span - This needs still some work... */
+    {
+        t = t + (span/2);
+        span = 30;
+    }
 
-    return lookup[60-((temp+20)/2)];
+    int x = (t * (60000/span))/1000; /* Scale to 60 points */
+
+    if (x > 60) /* just to prevent segfaults */
+        x = 60;
+
+    return lookup[x];
 }
 
 
