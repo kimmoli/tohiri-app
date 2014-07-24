@@ -225,6 +225,13 @@ Page
                 tohir.startScan()
             }
         }
+        Label
+        {
+            id: thermistorTemperature
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: mamBackground.bottom
+            text: "Hoplaa"
+        }
 
     }
 
@@ -249,6 +256,17 @@ Page
         }
     }
 
+    Timer
+    {
+        id: thermistorReader
+        interval: 1000
+        repeat: true
+        running: applicationActive && page.status === PageStatus.Active
+        onTriggered:
+        {
+            thermistorTemperature.text = tohir.readThermistor()
+        }
+    }
 
 
 }

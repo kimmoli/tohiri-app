@@ -40,6 +40,8 @@ public:
     Q_INVOKABLE void readSettings();
     Q_INVOKABLE void saveSettings();
 
+    Q_INVOKABLE QString readThermistor();
+
 signals:
     void temperaturesChanged();
     void versionChanged();

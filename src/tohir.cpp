@@ -100,11 +100,17 @@ void TohIR::writeUpdateRate(int val)
     emit updateRateChanged();
 }
 
+/* Return thermistor temperature */
+QString TohIR::readThermistor()
+{
+    return QString("%1 °C").arg(static_cast<int>(amg->getThermistor()));
+}
+
 /* Start IR Scan function, emit changed after completed */
 void TohIR::startScan()
 {
 
-    printf("Thermistor %0.5f\n", amg->getThermistor());
+//    printf("Thermistor %0.5f\n", amg->getThermistor());
 
     QList<qreal> res = amg->getTemperatureArray();
 
@@ -116,8 +122,8 @@ void TohIR::startScan()
 
     m_avg = 0;
 
-    for (i=0 ; i < 64 ; i++)
-        printf("%0.2f%s", res.at(i), (( i%8 == 0 ) ? "\n" : " ") );
+//     for (i=0 ; i < 64 ; i++)
+//        printf("%0.2f%s", res.at(i), (( i%8 == 0 ) ? "\n" : " ") );
 
     /* Return color gradient array */
 
