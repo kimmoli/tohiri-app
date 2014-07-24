@@ -59,6 +59,9 @@ void amg883x::init()
     buf[1] = 0x00;
     writeBytes(amgAddress, buf, 2);
 
+    QByteArray res = writeThenRead(amgAddress, amgAverageRegister, 1);
+
+    qDebug() << "AVE" << QString::number( res.at(0), 16 );
 
 }
 
