@@ -37,6 +37,28 @@ amg883x::~amg883x()
 
 void amg883x::init()
 {
+    /* Enable moving averaging */
+
+    char buf[2] = {0};
+
+    buf[0] = amgReservedRegister1F;
+    buf[1] = 0x50;
+    writeBytes(amgAddress, buf, 2);
+
+    buf[1] = 0x45;
+    writeBytes(amgAddress, buf, 2);
+
+    buf[1] = 0x57;
+    writeBytes(amgAddress, buf, 2);
+
+    buf[0] = amgAverageRegister;
+    buf[1] = 0x20; /* MAMOD=1 */
+    writeBytes(amgAddress, buf, 2);
+
+    buf[0] = amgReservedRegister1F;
+    buf[1] = 0x00;
+    writeBytes(amgAddress, buf, 2);
+
 
 }
 

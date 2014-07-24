@@ -18,7 +18,7 @@ system(rm $$OUT_PWD/tohir.o)
 #show some info about git status
 system(git --git-dir $$PWD/.git diff --name-only)
 
-REVISION = $$system(git --git-dir $$PWD/.git --work-tree $$PWD describe --dirty=-dev --always)
+REVISION = $$system(git --git-dir $$PWD/.git --work-tree $$PWD describe)# --dirty=-dev --always)
 DEFINES += "GITHASH=\\\"$${REVISION}\\\""
 
 message($${REVISION})

@@ -26,7 +26,7 @@ TohIR::TohIR(QObject *parent) :
 
     controlVdd(true);
 
-    QThread::msleep(100);
+    QThread::msleep(300);
 
     amg = new amg883x(0x68);
 }

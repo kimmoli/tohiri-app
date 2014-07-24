@@ -32,6 +32,8 @@ namespace
 
 const unsigned char amgThermistorRegister = 0x0e;
 const unsigned char amgTemperatureRegister = 0x80;
+const unsigned char amgAverageRegister = 0x07;
+const unsigned char amgReservedRegister1F = 0x1f;
 
 }
 
