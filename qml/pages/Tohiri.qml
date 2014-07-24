@@ -230,7 +230,15 @@ Page
             id: thermistorTemperature
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: mamBackground.bottom
-            text: "Hoplaa"
+            text: "---"
+        }
+        Label
+        {
+            id: currentDateTime
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: thermistorTemperature.bottom
+            anchors.topMargin: 10
+            text: "---"
         }
 
     }
@@ -265,6 +273,7 @@ Page
         onTriggered:
         {
             thermistorTemperature.text = tohir.readThermistor()
+            currentDateTime.text = Qt.formatDateTime(new Date(), "hh:mm:ss - dd.MM.yyyy")
         }
     }
 
