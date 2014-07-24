@@ -17,9 +17,9 @@ TohIR::TohIR(QObject *parent) :
     QTime time = QTime::currentTime();
     qsrand((uint)time.msec());
 
-    m_min = 100;
-    m_max = -20;
-    m_avg = 0;
+    m_min = 100.0;
+    m_max = -20.0;
+    m_avg = 0.0;
     m_hotSpot = 31;
 
     readSettings();
@@ -103,7 +103,7 @@ void TohIR::writeUpdateRate(int val)
 /* Return thermistor temperature */
 QString TohIR::readThermistor()
 {
-    return QString("%1 °C").arg(static_cast<int>(amg->getThermistor()));
+    return QString("%1 °C").arg(QString::number(amg->getThermistor(), 'g', 3));
 }
 
 /* Start IR Scan function, emit changed after completed */
@@ -115,12 +115,12 @@ void TohIR::startScan()
     QList<qreal> res = amg->getTemperatureArray();
 
     int i;
-    int thisMax = -40;
+    qreal thisMax = -40.0;
 
-    m_min = 200;
-    m_max = -40;
+    m_min = 200.0;
+    m_max = -40.0;
 
-    m_avg = 0;
+    m_avg = 0.0;
 
 //     for (i=0 ; i < 64 ; i++)
 //        printf("%0.2f%s", res.at(i), (( i%8 == 0 ) ? "\n" : " ") );
@@ -130,7 +130,7 @@ void TohIR::startScan()
     for (i=0 ; i<64 ; i++)
     {
         /* Just use whole numbers */
-        int tmp = static_cast<int>(res.at(i));
+        qreal tmp = res.at(i);
 
         if (tmp > thisMax)
         {
@@ -159,7 +159,7 @@ void TohIR::startScan()
     m_temperatures.clear();
 
     for (i=0 ; i<64 ; i++)
-        m_temperatures.append(temperatureColor(static_cast<int>(res.at(i)), m_min, m_max, m_avg));
+        m_temperatures.append(temperatureColor(res.at(i), m_min, m_max, m_avg));
 
     emit temperaturesChanged();
 }
@@ -173,17 +173,17 @@ QList<QString> TohIR::readTemperatures()
 /* Return minimum, average and maximum temperature of last scan */
 QString TohIR::readMinTemp()
 {
-    return QString("%1 °C").arg(m_min);
+    return QString("%1 °C").arg(QString::number(m_min, 'g', 3));
 }
 
 QString TohIR::readAvgTemp()
 {
-    return QString("%1 °C").arg(m_avg);
+    return QString("%1 °C").arg(QString::number(m_avg, 'g', 3));
 }
 
 QString TohIR::readMaxTemp()
 {
-    return QString("%1 °C").arg(m_max);
+    return QString("%1 °C").arg(QString::number(m_max, 'g', 3));
 }
 
 int TohIR::readHotSpot()
@@ -223,7 +223,7 @@ void TohIR::saveScreenCapture()
 }
 
 
-QString TohIR::temperatureColor(int temp, int min, int max, int avg)
+QString TohIR::temperatureColor(qreal temp, qreal min, qreal max, qreal avg)
 {
     /* We have 61 different colors - for now */
     static const QString lookup[61] =
@@ -242,26 +242,26 @@ QString TohIR::temperatureColor(int temp, int min, int max, int avg)
     };
 
     /* If true span is low, tweak it to around avg */
-    if ((max - min) < 20)
+    if ((max - min) < 20.0)
     {
-        max = ( ((avg + 10) > max) ? (avg + 10) : max );
-        min = ( ((avg - 10) < min) ? (avg - 10) : min );
+        max = ( ((avg + 10.0) > max) ? (avg + 10.0) : max );
+        min = ( ((avg - 10.0) < min) ? (avg - 10.0) : min );
     }
 
     /* Adjust low end to 0, to get only positive numbers */
-    int t = temp - min;
+    qreal t = temp - min;
 
     /* span is 2x max or min difference to average, which is larger */
-    int span = 2 * ((max - avg) > (avg - min) ? (max - avg) : (avg - min));
+    qreal span = 2.0 * ((max - avg) > (avg - min) ? (max - avg) : (avg - min));
 
     /* Scale to 60 points */
-    int x = (t * (60000/span))/1000;
+    qreal x = (t * (60000.0/span))/1000.0;
 
     /* just to prevent segfaults, return error color (white) */
-    if ( (x < 0) || (x > 60) )
+    if ( (x < 0.0) || (x > 60.0) )
         return "#FFFFFF";
 
-    return lookup[x]; /* Return corresponding RGB color */
+    return lookup[static_cast<int>(x)]; /* Return corresponding RGB color */
 }
 
 

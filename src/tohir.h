@@ -58,13 +58,13 @@ private:
     void controlVdd(bool state);
 
     int randInt(int low, int high);
-    QString temperatureColor(int temp, int min, int max, int avg);
+    QString temperatureColor(qreal temp, qreal min, qreal max, qreal avg);
 
     QList<QString> m_temperatures;
 
-    int m_avg;
-    int m_min;
-    int m_max;
+    qreal m_avg;
+    qreal m_min;
+    qreal m_max;
     int m_hotSpot;
     qreal m_gradientOpacity;
     int m_updateRate;
