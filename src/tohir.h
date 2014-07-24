@@ -70,6 +70,7 @@ private:
     int m_updateRate;
 
     amg883x* amg;
+
 };
 
 

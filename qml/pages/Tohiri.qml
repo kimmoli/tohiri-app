@@ -82,6 +82,65 @@ Page
             //height: 480
         }
 
+        Canvas
+        {
+            id: grad
+            width: 8
+            height: 8
+
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: videoPreview.top
+
+            onPaint:
+            {
+                var ctx = getContext('2d')
+
+                var temps = tohir.temperatures
+
+                var x=0;
+                var y=0;
+
+                for (var i=0; i<64 ; i++)
+                {
+                    ctx.beginPath();
+                    ctx.lineWidth="1";
+                    ctx.strokeStyle=temps[i]
+                    ctx.rect(x,y,1,1);
+                    ctx.stroke();
+                    x=x+1;
+                    if (x==8)
+                    {
+                        x=0;
+                        y=y+1;
+                    }
+                }
+            }
+        }
+
+        ShaderEffect
+        {
+            anchors.fill: videoPreview
+
+            property variant videoSource: ShaderEffectSource { sourceItem: videoPreview; hideSource: true }
+            property variant gradientSource: ShaderEffectSource { sourceItem: grad; hideSource: true }
+
+            property real op : tohir.gradientOpacity
+
+            fragmentShader:
+                "
+                varying highp vec2 qt_TexCoord0;
+
+                uniform sampler2D videoSource;
+                uniform sampler2D gradientSource;
+                uniform highp float op;
+
+                void main()
+                {
+                        gl_FragColor = texture2D(videoSource, qt_TexCoord0) + op * (texture2D(gradientSource, qt_TexCoord0) - texture2D(videoSource, qt_TexCoord0));
+                }
+                "
+        }
+
         Rectangle
         {
             id: gridPlaceHolder
@@ -91,39 +150,39 @@ Page
             anchors.centerIn: parent
         }
 
-        /* the 8x8 grig for temperature gradient */
-        Grid
-        {
-            id: tempGrid
-            z: 2
-            columns: 8
-            anchors.centerIn: parent
+//        /* the 8x8 grig for temperature gradient */
+//        Grid
+//        {
+//            id: tempGrid
+//            z: 2
+//            columns: 8
+//            anchors.centerIn: parent
 
-            Repeater
-            {
-                id: gradient
-                model: 64
+//            Repeater
+//            {
+//                id: gradient
+//                model: 64
 
-                Rectangle
-                {
-                    width: 60
-                    height: 60
-                    opacity: tohir.gradientOpacity
-                    color: "#000000"
-                    property string lab: ""
-                    Label
-                    {
-                        anchors.centerIn: parent
-                        text: parent.lab
-                        color: Theme.primaryColor
-                        font.pixelSize: Theme.fontSizeLarge
-                        font.bold: true
-                        horizontalAlignment: Text.AlignHCenter
-                        opacity: 1.0
-                    }
-                }
-            }
-        }
+//                Rectangle
+//                {
+//                    width: 60
+//                    height: 60
+//                    opacity: tohir.gradientOpacity
+//                    color: "#000000"
+//                    property string lab: ""
+//                    Label
+//                    {
+//                        anchors.centerIn: parent
+//                        text: parent.lab
+//                        color: Theme.primaryColor
+//                        font.pixelSize: Theme.fontSizeLarge
+//                        font.bold: true
+//                        horizontalAlignment: Text.AlignHCenter
+//                        opacity: 1.0
+//                    }
+//                }
+//            }
+//        }
 
         Rectangle
         {
@@ -252,15 +311,17 @@ Page
             var res = tohir.temperatures
             var hotspot = tohir.hotSpot
 
-            for (var i=0; i<64 ; i++)
-            {
-                var tmp = gradient.itemAt(i)
-                tmp.color = res[i];
-                if (i === hotspot)
-                    tmp.lab = "+"
-                else
-                    tmp.lab = ""
-            }
+            grad.requestPaint()
+
+//            for (var i=0; i<64 ; i++)
+//            {
+//                var tmp = gradient.itemAt(i)
+//                tmp.color = res[i];
+//                if (i === hotspot)
+//                    tmp.lab = "+"
+//                else
+//                    tmp.lab = ""
+//            }
         }
     }
 
