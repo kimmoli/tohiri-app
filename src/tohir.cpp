@@ -38,7 +38,7 @@ void TohIR::readSettings()
     s.beginGroup("View");
     m_gradientOpacity = s.value("gradientOpacity", "0.5").toReal();
     m_updateRate = s.value("updateRate", 500).toInt();
-    m_granularity = s.value("granularity", 10).toInt();
+    m_granularity = s.value("granularity", "2.0").toReal();
     s.endGroup();
 
     emit gradientOpacityChanged();
@@ -101,12 +101,12 @@ void TohIR::writeUpdateRate(int val)
     emit updateRateChanged();
 }
 
-int TohIR::readGranularity()
+qreal TohIR::readGranularity()
 {
     return m_granularity;
 }
 
-void TohIR::writeGranularity(int val)
+void TohIR::writeGranularity(qreal val)
 {
     m_granularity = val;
 

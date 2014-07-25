@@ -87,8 +87,11 @@ Page
         Canvas
         {
             id: grad
-            width: 8 * tohir.granularity
-            height: 8 * tohir.granularity
+
+            property real granu: tohir.granularity
+
+            width: (8 * granu).toFixed(0)
+            height: (8 * granu).toFixed(0)
 
             anchors.centerIn: gridPlaceHolder
 
@@ -98,8 +101,8 @@ Page
 
                 var temps = tohir.temperatures
 
-                var x = 0;
-                var y = 0;
+                var x = 0.0;
+                var y = 0.0;
 
                 for (var i=0; i<64 ; i++)
                 {
@@ -107,14 +110,14 @@ Page
                     ctx.lineWidth = "1"
                     ctx.strokeStyle = temps[i]
                     ctx.fillStyle = temps[i]
-                    ctx.fillRect(x, y, tohir.granularity, tohir.granularity)
+                    ctx.fillRect(x, y, granu, granu)
                     ctx.stroke()
 
-                    x = x + tohir.granularity
+                    x = x + granu
                     if (x >= width)
                     {
-                        x = 0
-                        y = y + tohir.granularity
+                        x = 0.0
+                        y = y + granu
                     }
                 }
             }
@@ -141,7 +144,7 @@ Page
 
                 void main()
                 {
-                        gl_FragColor = (0.8* texture2D(videoSource, qt_TexCoord0)) + op * (texture2D(gradientSource, qt_TexCoord0) - texture2D(videoSource, qt_TexCoord0));
+                        gl_FragColor = texture2D(videoSource, qt_TexCoord0) + op * (texture2D(gradientSource, qt_TexCoord0) - texture2D(videoSource, qt_TexCoord0));
                 }
                 "
         }
