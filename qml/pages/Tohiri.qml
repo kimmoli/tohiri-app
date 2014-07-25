@@ -88,10 +88,10 @@ Page
         {
             id: grad
 
-            property real granu: tohir.granularity
+            width: (8 * tohir.granularity).toFixed(0)
+            height: (8 * tohir.granularity).toFixed(0)
 
-            width: (8 * granu).toFixed(0)
-            height: (8 * granu).toFixed(0)
+            property real granu: (8 * tohir.granularity).toFixed(0)/8
 
             anchors.centerIn: gridPlaceHolder
 
@@ -107,7 +107,7 @@ Page
                 for (var i=0; i<64 ; i++)
                 {
                     ctx.beginPath()
-                    ctx.lineWidth = "1"
+                    ctx.lineWidth = 1.0
                     ctx.strokeStyle = temps[i]
                     ctx.fillStyle = temps[i]
                     ctx.fillRect(x, y, granu, granu)
@@ -287,15 +287,6 @@ Page
 
             grad.requestPaint()
 
-//            for (var i=0; i<64 ; i++)
-//            {
-//                var tmp = gradient.itemAt(i)
-//                tmp.color = res[i];
-//                if (i === hotspot)
-//                    tmp.lab = "+"
-//                else
-//                    tmp.lab = ""
-//            }
         }
     }
 

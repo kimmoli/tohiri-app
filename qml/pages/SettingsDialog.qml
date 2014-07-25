@@ -17,8 +17,8 @@ Dialog
     {
         if (result === DialogResult.Accepted)
         {
-            gradientOpacity = opacitySlider.value.toPrecision(1)
-            granularity = granularitySlider.value
+            gradientOpacity = opacitySlider.value.toFixed(1)
+            granularity = granularitySlider.value.toFixed(1)
             updateRate = rateSlider.value
         }
     }
@@ -41,9 +41,9 @@ Dialog
             anchors.horizontalCenter: parent.Center
             minimumValue: 0.0
             maximumValue: 1.0
-            value: gradientOpacity.toPrecision(1)
+            value: gradientOpacity.toFixed(1)
             stepSize: 0.1
-            valueText: value.toPrecision(1) * 100 + " %"
+            valueText: value.toFixed(1) * 100 + " %"
         }
         Slider
         {
@@ -52,10 +52,10 @@ Dialog
             label: "Gradient granularity"
             anchors.horizontalCenter: parent.Center
             minimumValue: 1.0
-            maximumValue: 10.0
+            maximumValue: 5.0
             value: granularity
             stepSize: 0.1
-            valueText: value
+            valueText: value.toFixed(1)
         }
         Slider
         {
