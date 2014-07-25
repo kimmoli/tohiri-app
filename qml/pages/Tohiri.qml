@@ -79,6 +79,7 @@ Page
             id: videoPreview
             z: 1
             anchors.centerIn: parent
+            anchors.verticalCenterOffset: -60
             source: camera
             width: 480
             //height: 480
@@ -93,7 +94,7 @@ Page
 
             property real granu: (8 * tohir.granularity).toFixed(0)/8
 
-            anchors.centerIn: gridPlaceHolder
+            anchors.centerIn: videoPreview // gridPlaceHolder
 
             onPaint:
             {
@@ -149,14 +150,14 @@ Page
                 "
         }
 
-        Rectangle
-        {
-            id: gridPlaceHolder
-            width: 480
-            height: 480
-            color: "transparent"
-            anchors.centerIn: parent
-        }
+//        Rectangle
+//        {
+//            id: gridPlaceHolder
+//            width: 480
+//            height: 480
+//            color: "transparent"
+//            anchors.centerIn: parent
+//        }
 
         Rectangle
         {
@@ -166,7 +167,7 @@ Page
             width: 480
             height: mamLabels.height + mamValues.height + 10
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: gridPlaceHolder.bottom //videoPreview.bottom
+            anchors.top: videoPreview.bottom // gridPlaceHolder.bottom
         }
 
         Row
@@ -274,6 +275,20 @@ Page
             text: "---"
         }
 
+        Rectangle
+        {
+            id: hotspotMarker
+            /*
+              Corner of videopreview is at 30,100  (-8)
+            */
+            x: 25
+            y: 95
+            width: 10
+            height: 10
+            rotation: 45
+            color: "white"
+        }
+
     }
 
     TohIR
@@ -287,6 +302,8 @@ Page
 
             grad.requestPaint()
 
+            hotspotMarker.x = 55 + ((60 * hotspot) % 480)
+            hotspotMarker.y = 135 + (80 * ((hotspot/8)|0))
         }
     }
 
