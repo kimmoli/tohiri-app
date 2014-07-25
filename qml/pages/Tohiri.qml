@@ -87,11 +87,10 @@ Page
         Canvas
         {
             id: grad
-            width: 8
-            height: 8
+            width: 8 * tohir.granularity
+            height: 8 * tohir.granularity
 
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.bottom: videoPreview.top
+            anchors.centerIn: gridPlaceHolder
 
             onPaint:
             {
@@ -99,21 +98,23 @@ Page
 
                 var temps = tohir.temperatures
 
-                var x=0;
-                var y=0;
+                var x = 0;
+                var y = 0;
 
                 for (var i=0; i<64 ; i++)
                 {
-                    ctx.beginPath();
-                    ctx.lineWidth="1";
-                    ctx.strokeStyle=temps[i]
-                    ctx.rect(x,y,1,1);
-                    ctx.stroke();
-                    x=x+1;
-                    if (x==8)
+                    ctx.beginPath()
+                    ctx.lineWidth = "1"
+                    ctx.strokeStyle = temps[i]
+                    ctx.fillStyle = temps[i]
+                    ctx.fillRect(x, y, tohir.granularity, tohir.granularity)
+                    ctx.stroke()
+
+                    x = x + tohir.granularity
+                    if (x >= width)
                     {
-                        x=0;
-                        y=y+1;
+                        x = 0
+                        y = y + tohir.granularity
                     }
                 }
             }
@@ -128,6 +129,8 @@ Page
 
             property real op : tohir.gradientOpacity
 
+            smooth: false /* afaik this sets GL_NEAREST  (true sets GL_LINEAR) */
+
             fragmentShader:
                 "
                 varying highp vec2 qt_TexCoord0;
@@ -138,7 +141,7 @@ Page
 
                 void main()
                 {
-                        gl_FragColor = texture2D(videoSource, qt_TexCoord0) + op * (texture2D(gradientSource, qt_TexCoord0) - texture2D(videoSource, qt_TexCoord0));
+                        gl_FragColor = (0.8* texture2D(videoSource, qt_TexCoord0)) + op * (texture2D(gradientSource, qt_TexCoord0) - texture2D(videoSource, qt_TexCoord0));
                 }
                 "
         }
@@ -151,40 +154,6 @@ Page
             color: "transparent"
             anchors.centerIn: parent
         }
-
-//        /* the 8x8 grig for temperature gradient */
-//        Grid
-//        {
-//            id: tempGrid
-//            z: 2
-//            columns: 8
-//            anchors.centerIn: parent
-
-//            Repeater
-//            {
-//                id: gradient
-//                model: 64
-
-//                Rectangle
-//                {
-//                    width: 60
-//                    height: 60
-//                    opacity: tohir.gradientOpacity
-//                    color: "#000000"
-//                    property string lab: ""
-//                    Label
-//                    {
-//                        anchors.centerIn: parent
-//                        text: parent.lab
-//                        color: Theme.primaryColor
-//                        font.pixelSize: Theme.fontSizeLarge
-//                        font.bold: true
-//                        horizontalAlignment: Text.AlignHCenter
-//                        opacity: 1.0
-//                    }
-//                }
-//            }
-//        }
 
         Rectangle
         {
