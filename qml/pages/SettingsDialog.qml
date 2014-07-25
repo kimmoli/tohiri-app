@@ -6,6 +6,7 @@ import Sailfish.Silica 1.0
 Dialog
 {
     property real gradientOpacity
+    property int granularity
     property int updateRate
 
     id: settings
@@ -17,6 +18,7 @@ Dialog
         if (result === DialogResult.Accepted)
         {
             gradientOpacity = opacitySlider.value.toPrecision(1)
+            granularity = granularitySlider.value
             updateRate = rateSlider.value
         }
     }
@@ -42,6 +44,18 @@ Dialog
             value: gradientOpacity.toPrecision(1)
             stepSize: 0.1
             valueText: value.toPrecision(1) * 100 + " %"
+        }
+        Slider
+        {
+            id: granularitySlider
+            width: parent.width-10
+            label: "Gradient granularity"
+            anchors.horizontalCenter: parent.Center
+            minimumValue: 1
+            maximumValue: 60
+            value: granularity
+            stepSize: 1
+            valueText: value
         }
         Slider
         {

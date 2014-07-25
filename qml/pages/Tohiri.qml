@@ -33,11 +33,13 @@ Page
                 {
                     var dialog = pageStack.push(Qt.resolvedUrl("SettingsDialog.qml"),
                                           { "gradientOpacity": tohir.gradientOpacity,
-                                            "updateRate": tohir.updateRate } )
+                                            "updateRate": tohir.updateRate,
+                                            "granularity": tohir.granularity } )
                     dialog.accepted.connect( function()
                     {
                         tohir.gradientOpacity = dialog.gradientOpacity
                         tohir.updateRate = dialog.updateRate
+                        tohir.granularity = dialog.granularity
                         tohir.saveSettings()
                     } )
                 }

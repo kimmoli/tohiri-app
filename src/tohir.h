@@ -15,6 +15,7 @@ class TohIR : public QObject
 
     Q_PROPERTY(qreal gradientOpacity READ readGradientOpacity WRITE writeGradientOpacity(qreal) NOTIFY gradientOpacityChanged())
     Q_PROPERTY(int updateRate READ readUpdateRate WRITE writeUpdateRate() NOTIFY updateRateChanged())
+    Q_PROPERTY(int granularity READ readGranularity WRITE writeGranularity() NOTIFY granularityChanged())
 
 
 public:
@@ -37,6 +38,9 @@ public:
     int readUpdateRate();
     void writeUpdateRate(int val);
 
+    int readGranularity();
+    void writeGranularity(int val);
+
     Q_INVOKABLE void readSettings();
     Q_INVOKABLE void saveSettings();
 
@@ -52,6 +56,7 @@ signals:
 
     void gradientOpacityChanged();
     void updateRateChanged();
+    void granularityChanged();
 
 private:
 
@@ -66,8 +71,10 @@ private:
     qreal m_min;
     qreal m_max;
     int m_hotSpot;
+
     qreal m_gradientOpacity;
     int m_updateRate;
+    int m_granularity;
 
     amg883x* amg;
 
