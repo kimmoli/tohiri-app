@@ -3,7 +3,6 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 import harbour.tohiri.TohIR 1.0
 import QtMultimedia 5.0
-import Sailfish.Media 1.0
 import "."
 
 Page
@@ -76,15 +75,12 @@ Page
             title: "TOH Infrared Imager"
         }
 
-        GStreamerVideoOutput
+        VideoOutput
         {
             id: videoPreview
-            z: 1
-            anchors.centerIn: parent
-            anchors.verticalCenterOffset: -60
             source: camera
             width: 480
-            //height: 480
+            anchors.centerIn: parent
         }
 
         Canvas
@@ -96,7 +92,7 @@ Page
 
             property real granu: (8 * tohir.granularity).toFixed(0)/8
 
-            anchors.centerIn: videoPreview // gridPlaceHolder
+            anchors.centerIn: parent
 
             onPaint:
             {
@@ -128,7 +124,12 @@ Page
 
         ShaderEffect
         {
-            anchors.fill: videoPreview
+            id: shader
+
+            anchors.centerIn: parent
+            anchors.verticalCenterOffset: -60
+            height: 640
+            width: 480
 
             property variant videoSource: ShaderEffectSource { sourceItem: videoPreview; hideSource: true }
             property variant gradientSource: ShaderEffectSource { sourceItem: grad; hideSource: true }
@@ -158,15 +159,6 @@ Page
                 "
         }
 
-//        Rectangle
-//        {
-//            id: gridPlaceHolder
-//            width: 480
-//            height: 480
-//            color: "transparent"
-//            anchors.centerIn: parent
-//        }
-
         Rectangle
         {
             id: mamBackground
@@ -175,7 +167,7 @@ Page
             width: 480
             height: mamLabels.height + mamValues.height + 10
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: videoPreview.bottom // gridPlaceHolder.bottom
+            anchors.top: shader.bottom
         }
 
         Row
@@ -184,7 +176,7 @@ Page
             z: 3
             x: Theme.paddingLarge
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: mamBackground.top //videoPreview.bottom
+            anchors.top: mamBackground.top
 
             Label
             {
