@@ -17,7 +17,7 @@
 
 int main(int argc, char *argv[])
 {
-    qmlRegisterType<TohIR>("tohiri.TohIR", 1, 0, "TohIR");
+    qmlRegisterType<TohIR>("harbour.tohiri.TohIR", 1, 0, "TohIR");
 
     QScopedPointer<QGuiApplication> app(SailfishApp::application(argc, argv));
     QScopedPointer<QQuickView> view(SailfishApp::createView());

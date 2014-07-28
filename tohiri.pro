@@ -6,7 +6,7 @@
 #         - desktop icon filename must be changed
 #         - desktop filename must be changed
 #         - icon definition filename in desktop file must be changed
-TARGET = tohiri
+TARGET = harbour-tohiri
 
 CONFIG += sailfishapp
 QT += dbus
@@ -36,9 +36,8 @@ OTHER_FILES += qml/tohiri.qml \
     qml/cover/CoverPage.qml \
     qml/pages/Tohiri.qml \
     rpm/tohiri.spec \
-    rpm/tohiri.yaml \
-	tohiri.png \
-    tohiri.desktop \
     qml/pages/aboutPage.qml \
-    qml/pages/SettingsDialog.qml
+    qml/pages/SettingsDialog.qml \
+    harbour-tohiri.desktop \
+    harbour-tohiri.png
 
