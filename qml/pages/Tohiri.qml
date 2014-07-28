@@ -34,12 +34,14 @@ Page
                     var dialog = pageStack.push(Qt.resolvedUrl("SettingsDialog.qml"),
                                           { "gradientOpacity": tohir.gradientOpacity,
                                             "updateRate": tohir.updateRate,
-                                            "granularity": tohir.granularity } )
+                                            "granularity": tohir.granularity,
+                                            "contrast": tohir.contrast } )
                     dialog.accepted.connect( function()
                     {
                         tohir.gradientOpacity = dialog.gradientOpacity
                         tohir.updateRate = dialog.updateRate
                         tohir.granularity = dialog.granularity
+                        tohir.contrast = dialog.contrast
                         tohir.saveSettings()
                     } )
                 }
@@ -132,6 +134,7 @@ Page
             property variant gradientSource: ShaderEffectSource { sourceItem: grad; hideSource: true }
 
             property real op : tohir.gradientOpacity
+            property real contrast : tohir.contrast
 
             smooth: false /* afaik this sets GL_NEAREST  (true sets GL_LINEAR) */
 
@@ -142,10 +145,15 @@ Page
                 uniform sampler2D videoSource;
                 uniform sampler2D gradientSource;
                 uniform highp float op;
+                uniform highp float contrast;
 
                 void main()
                 {
-                        gl_FragColor = texture2D(videoSource, qt_TexCoord0) + op * (texture2D(gradientSource, qt_TexCoord0) - texture2D(videoSource, qt_TexCoord0));
+                        highp vec4 gradient = texture2D(gradientSource, qt_TexCoord0);
+                        gradient.rgb /= gradient.a;
+                        gradient.rgb = (gradient.rgb - 0.5) * contrast + 0.5;
+                        gradient.rgb *= gradient.a;
+                        gl_FragColor = texture2D(videoSource, qt_TexCoord0) + op * (gradient - texture2D(videoSource, qt_TexCoord0));
                 }
                 "
         }

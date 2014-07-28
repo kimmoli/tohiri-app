@@ -8,6 +8,7 @@ Dialog
     property real gradientOpacity
     property real granularity
     property int updateRate
+    property real contrast
 
     id: settings
 
@@ -20,6 +21,7 @@ Dialog
             gradientOpacity = opacitySlider.value.toFixed(1)
             granularity = granularitySlider.value.toFixed(1)
             updateRate = rateSlider.value
+            contrast = contrastSlider.value
         }
     }
 
@@ -57,6 +59,19 @@ Dialog
             stepSize: 0.1
             valueText: value.toFixed(1)
         }
+        Slider
+        {
+            id: contrastSlider
+            width: parent.width-10
+            label: "Gradient contrast"
+            anchors.horizontalCenter: parent.Center
+            minimumValue: 1.0
+            maximumValue: 2.0
+            value: contrast
+            stepSize: 0.1
+            valueText: value.toFixed(1)
+        }
+
         Slider
         {
             id: rateSlider

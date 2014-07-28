@@ -39,11 +39,13 @@ void TohIR::readSettings()
     m_gradientOpacity = s.value("gradientOpacity", "0.5").toReal();
     m_updateRate = s.value("updateRate", 500).toInt();
     m_granularity = s.value("granularity", "2.0").toReal();
+    m_contrast = s.value("contrast", 1.0).toReal();
     s.endGroup();
 
     emit gradientOpacityChanged();
     emit updateRateChanged();
     emit granularityChanged();
+    emit contrastChanged();
 }
 
 void TohIR::saveSettings()
@@ -54,6 +56,7 @@ void TohIR::saveSettings()
     s.setValue("gradientOpacity", QString::number(m_gradientOpacity,'f',2) );
     s.setValue("updateRate", m_updateRate);
     s.setValue("granularity", m_granularity);
+    s.setValue("contrast", m_contrast);
     s.endGroup();
 }
 
@@ -112,6 +115,19 @@ void TohIR::writeGranularity(qreal val)
 
     emit granularityChanged();
 }
+
+qreal TohIR::readContrast()
+{
+    return m_contrast;
+}
+
+void TohIR::writeContrast(qreal val)
+{
+    m_contrast = val;
+
+    emit contrastChanged();
+}
+
 
 /* Return thermistor temperature */
 QString TohIR::readThermistor()
