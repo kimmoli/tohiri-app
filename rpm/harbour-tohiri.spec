@@ -1,5 +1,6 @@
 #
 # TOHIRI spec File
+# (C) kimmoli 2014
 # 
 
 Name:       harbour-tohiri
@@ -51,6 +52,4 @@ desktop-file-install --delete-original       \
 %{_datadir}/applications/
 %{_datadir}/%{name}/
 %{_datadir}/%{name}/qml
-
-%post
 
