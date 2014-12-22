@@ -75,7 +75,7 @@ int TohIR::randInt(int low, int high)
 /* Return git describe as string (see .pro file) */
 QString TohIR::readVersion()
 {
-    return GITHASH;
+    return QString(APPVERSION);
 }
 
 /**/
